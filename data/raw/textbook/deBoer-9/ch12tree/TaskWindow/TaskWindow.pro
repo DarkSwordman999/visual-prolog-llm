@@ -1,0 +1,101 @@
+/*****************************************************************************
+
+                         University of Groningen, Faculty of Management and Organization
+
+******************************************************************************/
+implement taskWindow
+    inherits applicationWindow
+    open vpiDomains
+
+constants
+    mdiProperty : boolean = true.
+clauses
+    new():-
+        applicationWindow::new(),
+        generatedInitialize().
+
+predicates
+    onShow : window::showListener.
+clauses
+    onShow(_, _CreationData):-
+        _MessageForm = messageForm::display(This).
+
+predicates
+    onDestroy : window::destroyListener.
+clauses
+    onDestroy(_).
+
+predicates
+    onHelpAbout : window::menuItemListener.
+clauses
+    onHelpAbout(TaskWin, _MenuTag):-
+        _AboutDialog = aboutDialog::display(TaskWin).
+
+predicates
+    onFileExit : window::menuItemListener.
+clauses
+    onFileExit(_, _MenuTag):-
+        close().
+
+predicates
+    onSizeChanged : window::sizeListener.
+clauses
+    onSizeChanged(_):-
+        vpiToolbar::resize(getVPIWindow()).
+
+predicates
+    onTreesCreate : window::menuItemListener.
+clauses
+    onTreesCreate(_Source, _MenuTag) :-
+        classtree::add_from_list(["F", "B", "G", "A", "D", "I", "C", "E", "H"]),
+        stdIO::write("Tree has been created"), stdIO::nl.
+
+predicates
+    onTreesTraversePreorder : window::menuItemListener.
+clauses
+    onTreesTraversePreorder(_Source, _MenuTag) :-
+        classtree::traverse("preorder").
+
+predicates
+    onTreesTraverseInorder : window::menuItemListener.
+clauses
+    onTreesTraverseInorder(_Source, _MenuTag) :-
+        classtree::traverse("inorder").
+
+predicates
+    onTreesTraversePostorder : window::menuItemListener.
+clauses
+    onTreesTraversePostorder(_Source, _MenuTag):-
+        classtree::traverse("postorder").
+
+% This code is maintained automatically, do not update it manually. 13:07:02-28.7.2008
+predicates
+    generatedInitialize : ().
+clauses
+    generatedInitialize():-
+        setText("ch12tree"),
+        setDecoration(titlebar([closebutton(),maximizebutton(),minimizebutton()])),
+        setBorder(sizeBorder()),
+        setState([wsf_ClipSiblings]),
+        setMdiProperty(mdiProperty),
+        menuSet(resMenu(resourceIdentifiers::id_TaskMenu)),
+        addShowListener(generatedOnShow),
+        addShowListener(onShow),
+        addSizeListener(onSizeChanged),
+        addDestroyListener(onDestroy),
+        addMenuItemListener(resourceIdentifiers::id_help_about, onHelpAbout),
+        addMenuItemListener(resourceIdentifiers::id_file_exit, onFileExit),
+        addMenuItemListener(resourceIdentifiers::id_trees_create, onTreesCreate),
+        addMenuItemListener(resourceIdentifiers::id_trees_traverse_preorder, onTreesTraversePreorder),
+        addMenuItemListener(resourceIdentifiers::id_trees_traverse_inorder, onTreesTraverseInorder),
+        addMenuItemListener(resourceIdentifiers::id_trees_traverse_postorder, onTreesTraversePostorder).
+
+predicates
+    generatedOnShow: window::showListener.
+clauses
+    generatedOnShow(_,_):-
+        projectToolbar::create(getVPIWindow()),
+        statusLine::create(getVPIWindow()),
+        succeed.
+% end of automatic code
+end implement taskWindow

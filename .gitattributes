@@ -1,0 +1,9 @@
+# Исходники Visual Prolog: .pro — реализация, .cl — объявление класса, .i — интерфейс.
+# GitHub по расширению считает .cl кодом на Cool/Common Lisp, а .i — SWIG/Assembly/C,
+# поэтому язык указан явно (отдельного Visual Prolog в GitHub Linguist нет, ближайший — Prolog).
+*.pro linguist-language=Prolog
+*.cl  linguist-language=Prolog
+*.i   linguist-language=Prolog
+
+# переводы строк в репозитории — LF
+* text=auto eol=lf

@@ -1,0 +1,3 @@
+# Сбор и сборка датасета (src/collect, src/build_dataset.py)
+pymupdf==1.28.2      # учебники в PDF
+python-docx==1.2.0   # разборы кода лабораторных (.docx)

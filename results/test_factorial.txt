@@ -1,0 +1,13 @@
+
+Тест 1: Факториал
+Запрос: Напиши на Visual Prolog предикат для вычисления факториала числа.
+Ответ модели:
+factorial(Number, Factorial) :-
+    if Number < 0 then
+        Error = "Negative numbers have no factorial",
+        fail
+    end if,
+    Factorial = fact(Number),
+    !.
+fact(1, 1).
+fact(N, N*F) :- fact(N-1, F).

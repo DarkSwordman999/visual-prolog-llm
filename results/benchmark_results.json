@@ -1,0 +1,62 @@
+[
+  {
+    "id": 1,
+    "category": "recursion",
+    "instruction": "Напиши на Visual Prolog предикат для вычисления факториала числа.",
+    "answer": "facts\n  fact(1,1).\n  fact(N, F) :-\n    N>1,\n    fact(N-1, FN),\n    F=FN*N.\nclauses\n  run():-\n    stdIO::init(),\n    N= readTerm(),\n    fact(N, F),\n    stdIO::write(\"Факториал \",N,\" = \",F),stdIO::nl."
+  },
+  {
+    "id": 2,
+    "category": "lists",
+    "instruction": "Напиши на Visual Prolog предикат для вычисления суммы элементов списка.",
+    "answer": "sumList([], 0) :- !.\nsumList([X|T], S) :-\n    sumList(T, X+S)."
+  },
+  {
+    "id": 3,
+    "category": "basic",
+    "instruction": "Напиши на Visual Prolog предикат для проверки, является ли число четным.",
+    "answer": "isEven(Number) :-\n    Number = _*2 + 0."
+  },
+  {
+    "id": 4,
+    "category": "lists",
+    "instruction": "Напиши на Visual Prolog предикат для поиска максимального элемента в списке.",
+    "answer": "predicates\n    max_element : (integer* List, integer Max) procedure (i,o)."
+  },
+  {
+    "id": 5,
+    "category": "strings",
+    "instruction": "Напиши на Visual Prolog предикат для конкатенации двух строк.",
+    "answer": "concatenation(String1, String2) = ConcatenatedString :-\n    ConcatenatedString = String1 + String2."
+  },
+  {
+    "id": 6,
+    "category": "recursion",
+    "instruction": "Напиши на Visual Prolog предикат для вычисления чисел Фибоначчи.",
+    "answer": "predicates\n    fibonacci : (integer, integer) procedure (i,o)."
+  },
+  {
+    "id": 7,
+    "category": "strings",
+    "instruction": "Напиши на Visual Prolog предикат для проверки, является ли строка палиндромом.",
+    "answer": "isPalindrome(String) :-\n    String = string::concat(String, string::reverse(String))."
+  },
+  {
+    "id": 8,
+    "category": "lists",
+    "instruction": "Напиши на Visual Prolog предикат для удаления дубликатов из списка.",
+    "answer": "predicates\n    removeDuplicates : (integer* List, integer* Result) procedure (i,o)."
+  },
+  {
+    "id": 9,
+    "category": "lists",
+    "instruction": "Напиши на Visual Prolog предикат для вычисления длины списка.",
+    "answer": "length([], 0).\nlength([_|Tail], Length) = length(Tail, Length1) + 1."
+  },
+  {
+    "id": 10,
+    "category": "basic",
+    "instruction": "Напиши на Visual Prolog предикат для проверки, является ли число простым.",
+    "answer": "predicates\n    isPrime : (integer Number) determ."
+  }
+]

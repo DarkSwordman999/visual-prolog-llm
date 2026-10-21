@@ -48,7 +48,12 @@ def is_code_line(text):
     words = len(text.split())
     if words > 14 and ":-" not in text:          # длинные предложения — это текст
         return False
-    return any(p.search(text) for p in CODE_LINE)
+    if not any(p.search(text) for p in CODE_LINE):
+        return False
+    # строка из многих слов — код, только если и по форме похожа на код
+    stripped = text.rstrip()
+    looks_like_code = ":-" in text or ("(" in text and stripped.endswith((".", ",", ")")))
+    return words <= 8 or looks_like_code
 
 
 def lines_of(doc, mode):

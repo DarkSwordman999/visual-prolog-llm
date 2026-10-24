@@ -178,10 +178,79 @@ def build_textbook_pairs():
     return out
 
 
+PFC = RAW / "pfc"
+PART_OF = {".pro": "часть реализации", ".cl": "часть объявления класса", ".i": "часть интерфейса"}
+TOP_SECTION = re.compile(r"^(class\s+)?(predicates|properties|constructors|clauses|domains|constants|facts|delegate)\b",
+                         re.M | re.I)
+
+
+def split_sections(code: str):
+    """Режет длинный файл на куски не больше MAX_CODE_CHARS по границам разделов."""
+    starts = [m.start() for m in TOP_SECTION.finditer(code)]
+    pieces = [code[a:b] for a, b in zip([0] + starts, starts + [len(code)]) if code[a:b].strip()]
+    chunks, cur = [], ""
+    for piece in pieces:
+        if cur and len(cur) + len(piece) > MAX_CODE_CHARS:
+            chunks.append(cur)
+            cur = ""
+        cur += piece
+    if cur:
+        chunks.append(cur)
+    return [c.strip("\n") for c in chunks]
+
+
+def build_pfc_code():
+    """Исходники PFC (собираются src/collect/collect_pfc.py, в git не попадают)."""
+    out = Collector("pfc_code")
+    for line in open(PFC / "files.jsonl", encoding="utf-8"):
+        r = json.loads(line)
+        kind = classify(r["code"], r["path"])
+        if kind != "vp_modern":
+            out.dropped["не Visual Prolog" if kind == "other" else "служебный файл"] += 1
+            continue
+        code = clean(r["code"])
+        origin = "pfc/" + r["path"]
+        if len(code) <= MAX_CODE_CHARS:
+            out.add(file_row("pfc", origin, r["path"], code, "modern"), key(code))
+            continue
+        chunks = split_sections(code)
+        name = unit_name(code, pathlib.PurePath(r["path"]).stem)
+        part = PART_OF.get(pathlib.PurePath(r["path"]).suffix.lower(), "часть кода")
+        for i, chunk in enumerate(chunks, 1):
+            row = {"source": "pfc", "origin": f"{origin}#{i}", "dialect": "modern",
+                   "instruction": f"Напиши на Visual Prolog {part} {name} ({i} из {len(chunks)}).", "output": chunk}
+            out.add(row, key(chunk))
+    return out
+
+
+def build_pfc_pairs():
+    """Пары из документирующих комментариев PFC: описание → объявление и описание → реализация."""
+    out = Collector("pfc_pairs", MIN_PAIR_CODE_CHARS)
+    for line in open(PFC / "pairs.jsonl", encoding="utf-8"):
+        r = json.loads(line)
+        unit = f'{r["unit_kind"]} {r["unit"]}'
+        if r["kind"] == "decl":
+            instruction = f'Topic: {unit}.\n\n{r["explanation"]}\n\nWrite the Visual Prolog declaration.'
+            code, origin = r["declaration"], "pfc/" + r["path"]
+        else:
+            instruction = (f'{r["explanation"]}\n\nDeclaration in {unit}:\n{r["declaration"]}\n\n'
+                           "Write the Visual Prolog implementation (clauses).")
+            code, origin = clean(r["clauses"]), "pfc/" + r["impl_path"]
+        row = {"source": "pfc", "origin": origin, "dialect": "modern", "lang": "en", "pair_kind": r["kind"],
+               "section": unit, "explanation": r["explanation"], "instruction": instruction, "output": code}
+        out.add(row, key(instruction, code))
+    return out
+
+
 def main():
     OUT.mkdir(parents=True, exist_ok=True)
     report = []
-    for build in (build_github, build_textbook_pairs, build_textbook_code):
+    builds = [build_github, build_textbook_pairs, build_textbook_code]
+    if (PFC / "files.jsonl").exists():
+        builds += [build_pfc_code, build_pfc_pairs]
+    else:
+        print("data/raw/pfc не найдена: часть из PFC пропущена (см. src/collect/collect_pfc.py)")
+    for build in builds:
         out = build()
         out.save()
         by_source = collections.Counter(r["source"] for r in out.rows)

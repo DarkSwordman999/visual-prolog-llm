@@ -182,6 +182,9 @@ PFC = RAW / "pfc"
 PART_OF = {".pro": "часть реализации", ".cl": "часть объявления класса", ".i": "часть интерфейса"}
 TOP_SECTION = re.compile(r"^(class\s+)?(predicates|properties|constructors|clauses|domains|constants|facts|delegate)\b",
                          re.M | re.I)
+DECL_NAME = re.compile(r"^\s{4}(\w+)\s*:", re.M)
+# в объявлении класса (.cl) все предикаты — предикаты класса; в реализации они пишутся как class predicates
+CLASS_HEAD = {"predicates": "class predicates", "properties": "class properties"}
 
 
 def split_sections(code: str):
@@ -224,21 +227,33 @@ def build_pfc_code():
 
 
 def build_pfc_pairs():
-    """Пары из документирующих комментариев PFC: описание → объявление и описание → реализация."""
+    """Пары из документирующих комментариев PFC: описание → объявление и реализация вместе.
+
+    Пары «описание → только объявление» не берутся: на них модель училась останавливаться после объявления.
+    Объявления в запросе нет — только описание, как в бенчмарке.
+    """
     out = Collector("pfc_pairs", MIN_PAIR_CODE_CHARS)
     for line in open(PFC / "pairs.jsonl", encoding="utf-8"):
         r = json.loads(line)
-        unit = f'{r["unit_kind"]} {r["unit"]}'
-        if r["kind"] == "decl":
-            instruction = f'Topic: {unit}.\n\n{r["explanation"]}\n\nWrite the Visual Prolog declaration.'
-            code, origin = r["declaration"], "pfc/" + r["path"]
+        if r["kind"] != "impl":
+            out.dropped["только объявление"] += 1
+            continue
+        head, _, decl = r["declaration"].partition("\n")
+        head = CLASS_HEAD.get(head.strip().lower())
+        if head is None:  # constructors и прочее — вне реализации класса не собрать
+            out.dropped["не предикат"] += 1
+            continue
+        names = list(dict.fromkeys(DECL_NAME.findall(decl)))
+        if len(names) == 1:
+            what = "свойство" if "properties" in head else "предикат"
         else:
-            instruction = (f'{r["explanation"]}\n\nDeclaration in {unit}:\n{r["declaration"]}\n\n'
-                           "Write the Visual Prolog implementation (clauses).")
-            code, origin = clean(r["clauses"]), "pfc/" + r["impl_path"]
-        row = {"source": "pfc", "origin": origin, "dialect": "modern", "lang": "en", "pair_kind": r["kind"],
-               "section": unit, "explanation": r["explanation"], "instruction": instruction, "output": code}
-        out.add(row, key(instruction, code))
+            what = "свойства" if "properties" in head else "предикаты"
+        instruction = f'Напиши на Visual Prolog {what} {", ".join(names)}.\n\n{r["explanation"]}'
+        code = f"{head}\n{decl}\n\n{clean(r['clauses'])}"
+        row = {"source": "pfc", "origin": "pfc/" + r["impl_path"], "dialect": "modern", "lang": "ru",
+               "section": f'{r["unit_kind"]} {r["unit"]}', "explanation": r["explanation"],
+               "instruction": instruction, "output": code}
+        out.add(row, key(r["explanation"], code))
     return out
 
 

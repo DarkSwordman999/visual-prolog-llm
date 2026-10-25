@@ -27,6 +27,7 @@ import csv
 import hashlib
 import json
 import pathlib
+import random
 import re
 
 from vp_filter import classify, read_text
@@ -179,32 +180,23 @@ def build_textbook_pairs():
 
 
 PFC = RAW / "pfc"
-PART_OF = {".pro": "часть реализации", ".cl": "часть объявления класса", ".i": "часть интерфейса"}
-TOP_SECTION = re.compile(r"^(class\s+)?(predicates|properties|constructors|clauses|domains|constants|facts|delegate)\b",
-                         re.M | re.I)
+# pfc_code в 6 раз больше всех остальных данных вместе: без ограничения модель учит в основном стиль библиотеки.
+# Берется случайная выборка целых файлов примерно того же объема, что все остальное (~1,3 млн символов).
+PFC_CODE_BUDGET = 1_300_000
+PFC_SEED = 42
 DECL_NAME = re.compile(r"^\s{4}(\w+)\s*:", re.M)
 # в объявлении класса (.cl) все предикаты — предикаты класса; в реализации они пишутся как class predicates
 CLASS_HEAD = {"predicates": "class predicates", "properties": "class properties"}
 
 
-def split_sections(code: str):
-    """Режет длинный файл на куски не больше MAX_CODE_CHARS по границам разделов."""
-    starts = [m.start() for m in TOP_SECTION.finditer(code)]
-    pieces = [code[a:b] for a, b in zip([0] + starts, starts + [len(code)]) if code[a:b].strip()]
-    chunks, cur = [], ""
-    for piece in pieces:
-        if cur and len(cur) + len(piece) > MAX_CODE_CHARS:
-            chunks.append(cur)
-            cur = ""
-        cur += piece
-    if cur:
-        chunks.append(cur)
-    return [c.strip("\n") for c in chunks]
-
-
 def build_pfc_code():
-    """Исходники PFC (собираются src/collect/collect_pfc.py, в git не попадают)."""
+    """Исходники PFC (собираются src/collect/collect_pfc.py, в git не попадают).
+
+    Только целые файлы до MAX_CODE_CHARS: куски порезанных больших файлов учат модель обрывать код.
+    Из них — случайная выборка в пределах PFC_CODE_BUDGET символов.
+    """
     out = Collector("pfc_code")
+    rows = []
     for line in open(PFC / "files.jsonl", encoding="utf-8"):
         r = json.loads(line)
         kind = classify(r["code"], r["path"])
@@ -212,17 +204,23 @@ def build_pfc_code():
             out.dropped["не Visual Prolog" if kind == "other" else "служебный файл"] += 1
             continue
         code = clean(r["code"])
-        origin = "pfc/" + r["path"]
-        if len(code) <= MAX_CODE_CHARS:
-            out.add(file_row("pfc", origin, r["path"], code, "modern"), key(code))
+        if len(code) > MAX_CODE_CHARS:
+            out.dropped["длинный код"] += 1
             continue
-        chunks = split_sections(code)
-        name = unit_name(code, pathlib.PurePath(r["path"]).stem)
-        part = PART_OF.get(pathlib.PurePath(r["path"]).suffix.lower(), "часть кода")
-        for i, chunk in enumerate(chunks, 1):
-            row = {"source": "pfc", "origin": f"{origin}#{i}", "dialect": "modern",
-                   "instruction": f"Напиши на Visual Prolog {part} {name} ({i} из {len(chunks)}).", "output": chunk}
-            out.add(row, key(chunk))
+        rows.append(file_row("pfc", "pfc/" + r["path"], r["path"], code, "modern"))
+    random.Random(PFC_SEED).shuffle(rows)
+    used = 0
+    for row in rows:
+        if used + len(row["output"]) > PFC_CODE_BUDGET:
+            out.dropped["сверх объема выборки"] += 1
+            continue
+        before = len(out.rows)
+        out.add(row, key(row["output"]))
+        if len(out.rows) > before:
+            used += len(row["output"])
+    out.rows.sort(key=lambda r: r["origin"])
+    for i, row in enumerate(out.rows, 1):
+        row["id"] = f"pfc_code-{i:05d}"
     return out
 
 

@@ -1,0 +1,269 @@
+[
+ {
+  "id": "b01_even_sum",
+  "category": "числа",
+  "instruction": "Напиши на Visual Prolog консольную программу, которая выводит сумму всех чётных чисел от 1 до 100. Программа должна вывести только ответ.",
+  "stdin": "",
+  "expected_numbers": [
+   2550
+  ],
+  "reference": "benchmark_v2_reference/01_even_sum.pro"
+ },
+ {
+  "id": "b02_divisor_count",
+  "category": "числа",
+  "instruction": "Напиши на Visual Prolog консольную программу, которая выводит количество делителей числа 360. Программа должна вывести только ответ.",
+  "stdin": "",
+  "expected_numbers": [
+   24
+  ],
+  "reference": "benchmark_v2_reference/02_divisor_count.pro"
+ },
+ {
+  "id": "b03_armstrong",
+  "category": "числа",
+  "instruction": "Напиши на Visual Prolog консольную программу, которая выводит через пробел все трёхзначные числа Армстронга (число равно сумме кубов своих цифр). Программа должна вывести только ответ.",
+  "stdin": "",
+  "expected_numbers": [
+   153,
+   370,
+   371,
+   407
+  ],
+  "reference": "benchmark_v2_reference/03_armstrong.pro"
+ },
+ {
+  "id": "b04_digit_product",
+  "category": "числа",
+  "instruction": "Напиши на Visual Prolog консольную программу, которая выводит произведение цифр числа 2345. Программа должна вывести только ответ.",
+  "stdin": "",
+  "expected_numbers": [
+   120
+  ],
+  "reference": "benchmark_v2_reference/04_digit_product.pro"
+ },
+ {
+  "id": "b05_lcm_range",
+  "category": "числа",
+  "instruction": "Напиши на Visual Prolog консольную программу, которая выводит наименьшее число, делящееся без остатка на все числа от 1 до 10. Программа должна вывести только ответ.",
+  "stdin": "",
+  "expected_numbers": [
+   2520
+  ],
+  "reference": "benchmark_v2_reference/05_lcm_range.pro"
+ },
+ {
+  "id": "b06_prime_sum",
+  "category": "числа",
+  "instruction": "Напиши на Visual Prolog консольную программу, которая выводит сумму всех простых чисел меньше 50. Программа должна вывести только ответ.",
+  "stdin": "",
+  "expected_numbers": [
+   328
+  ],
+  "reference": "benchmark_v2_reference/06_prime_sum.pro"
+ },
+ {
+  "id": "b07_triangular_count",
+  "category": "числа",
+  "instruction": "Напиши на Visual Prolog консольную программу, которая выводит, сколько треугольных чисел (1, 3, 6, 10, …) меньше 100. Программа должна вывести только ответ.",
+  "stdin": "",
+  "expected_numbers": [
+   13
+  ],
+  "reference": "benchmark_v2_reference/07_triangular_count.pro"
+ },
+ {
+  "id": "b08_binary_to_decimal",
+  "category": "строки",
+  "instruction": "Напиши на Visual Prolog консольную программу, которая переводит двоичную запись \"101101\" в десятичное число и выводит его. Программа должна вывести только ответ.",
+  "stdin": "",
+  "expected_numbers": [
+   45
+  ],
+  "reference": "benchmark_v2_reference/08_binary_to_decimal.pro"
+ },
+ {
+  "id": "b09_list_without_multiples",
+  "category": "списки",
+  "instruction": "Напиши на Visual Prolog консольную программу, которая удаляет из списка чисел от 1 до 10 все числа, кратные 3, и выводит получившийся список. Программа должна вывести только ответ.",
+  "stdin": "",
+  "expected_numbers": [
+   1,
+   2,
+   4,
+   5,
+   7,
+   8,
+   10
+  ],
+  "reference": "benchmark_v2_reference/09_list_without_multiples.pro"
+ },
+ {
+  "id": "b10_sum_of_squares_list",
+  "category": "списки",
+  "instruction": "Напиши на Visual Prolog консольную программу, которая выводит сумму квадратов элементов списка [1, 2, 3, 4]. Программа должна вывести только ответ.",
+  "stdin": "",
+  "expected_numbers": [
+   30
+  ],
+  "reference": "benchmark_v2_reference/10_sum_of_squares_list.pro"
+ },
+ {
+  "id": "b11_first_negative",
+  "category": "списки",
+  "instruction": "Напиши на Visual Prolog консольную программу, которая выводит номер (считая с 1) первого отрицательного элемента списка [5, 3, -2, 7, -1]. Программа должна вывести только ответ.",
+  "stdin": "",
+  "expected_numbers": [
+   3
+  ],
+  "reference": "benchmark_v2_reference/11_first_negative.pro"
+ },
+ {
+  "id": "b12_list_union",
+  "category": "списки",
+  "instruction": "Напиши на Visual Prolog консольную программу, которая выводит объединение списков [1, 2, 3] и [2, 3, 4, 5] без повторов, сохраняя порядок первого появления. Программа должна вывести только ответ.",
+  "stdin": "",
+  "expected_numbers": [
+   1,
+   2,
+   3,
+   4,
+   5
+  ],
+  "reference": "benchmark_v2_reference/12_list_union.pro"
+ },
+ {
+  "id": "b13_list_intersection",
+  "category": "списки",
+  "instruction": "Напиши на Visual Prolog консольную программу, которая выводит пересечение списков [1, 2, 3, 4, 5] и [4, 5, 6, 7]. Программа должна вывести только ответ.",
+  "stdin": "",
+  "expected_numbers": [
+   4,
+   5
+  ],
+  "reference": "benchmark_v2_reference/13_list_intersection.pro"
+ },
+ {
+  "id": "b14_max_adjacent_diff",
+  "category": "списки",
+  "instruction": "Напиши на Visual Prolog консольную программу, которая выводит наибольшую по модулю разность соседних элементов списка [1, 7, 3, 10, 2]. Программа должна вывести только ответ.",
+  "stdin": "",
+  "expected_numbers": [
+   8
+  ],
+  "reference": "benchmark_v2_reference/14_max_adjacent_diff.pro"
+ },
+ {
+  "id": "b15_permutation_check",
+  "category": "списки",
+  "instruction": "Напиши на Visual Prolog консольную программу, которая выводит 1, если список [3, 1, 2, 5, 4] содержит каждое число от 1 до его длины ровно один раз, и 0 иначе. Программа должна вывести только ответ.",
+  "stdin": "",
+  "expected_numbers": [
+   1
+  ],
+  "reference": "benchmark_v2_reference/15_permutation_check.pro"
+ },
+ {
+  "id": "b16_capital_words",
+  "category": "строки",
+  "instruction": "Напиши на Visual Prolog консольную программу, которая выводит количество слов, начинающихся с заглавной буквы, в строке \"Мама мыла Раму и Кота\". Программа должна вывести только ответ.",
+  "stdin": "",
+  "expected_numbers": [
+   3
+  ],
+  "reference": "benchmark_v2_reference/16_capital_words.pro"
+ },
+ {
+  "id": "b17_distinct_chars",
+  "category": "строки",
+  "instruction": "Напиши на Visual Prolog консольную программу, которая выводит количество различных символов в строке \"abracadabra\". Программа должна вывести только ответ.",
+  "stdin": "",
+  "expected_numbers": [
+   5
+  ],
+  "reference": "benchmark_v2_reference/17_distinct_chars.pro"
+ },
+ {
+  "id": "b18_digits_in_string",
+  "category": "строки",
+  "instruction": "Напиши на Visual Prolog консольную программу, которая выводит сумму всех цифр, встречающихся в строке \"a1b2c3d10\" (каждая цифра считается отдельно). Программа должна вывести только ответ.",
+  "stdin": "",
+  "expected_numbers": [
+   7
+  ],
+  "reference": "benchmark_v2_reference/18_digits_in_string.pro"
+ },
+ {
+  "id": "b19_vertex_degrees",
+  "category": "графы",
+  "instruction": "Напиши на Visual Prolog консольную программу: неориентированный граф задан рёбрами a-b, a-c, b-c, c-d. Выведи через пробел степени вершин a, b, c, d. Программа должна вывести только ответ.",
+  "stdin": "",
+  "expected_numbers": [
+   2,
+   2,
+   3,
+   1
+  ],
+  "reference": "benchmark_v2_reference/19_vertex_degrees.pro"
+ },
+ {
+  "id": "b20_tree_sum",
+  "category": "деревья",
+  "instruction": "Напиши на Visual Prolog консольную программу: опиши двоичное дерево доменом и выведи сумму значений в дереве, у которого корень 5, левый потомок 2, правый потомок 8, а у узла 8 левый потомок 6. Программа должна вывести только ответ.",
+  "stdin": "",
+  "expected_numbers": [
+   21
+  ],
+  "reference": "benchmark_v2_reference/20_tree_sum.pro"
+ },
+ {
+  "id": "b21_grid_paths",
+  "category": "динамическое программирование",
+  "instruction": "Напиши на Visual Prolog консольную программу, которая выводит число путей в сетке 3 × 3 клетки из левого верхнего угла в правый нижний, если ходить можно только вправо и вниз по линиям сетки. Программа должна вывести только ответ.",
+  "stdin": "",
+  "expected_numbers": [
+   20
+  ],
+  "reference": "benchmark_v2_reference/21_grid_paths.pro"
+ },
+ {
+  "id": "b22_stairs",
+  "category": "динамическое программирование",
+  "instruction": "Напиши на Visual Prolog консольную программу, которая выводит, сколькими способами можно подняться на 10 ступенек, если за шаг можно подняться на 1 или 2 ступеньки. Программа должна вывести только ответ.",
+  "stdin": "",
+  "expected_numbers": [
+   89
+  ],
+  "reference": "benchmark_v2_reference/22_stairs.pro"
+ },
+ {
+  "id": "b23_lis_length",
+  "category": "динамическое программирование",
+  "instruction": "Напиши на Visual Prolog консольную программу, которая выводит длину наибольшей строго возрастающей подпоследовательности списка [10, 9, 2, 5, 3, 7, 101, 18]. Программа должна вывести только ответ.",
+  "stdin": "",
+  "expected_numbers": [
+   4
+  ],
+  "reference": "benchmark_v2_reference/23_lis_length.pro"
+ },
+ {
+  "id": "b24_read_sum_to_n",
+  "category": "ввод",
+  "instruction": "Напиши на Visual Prolog консольную программу, которая читает с клавиатуры число N и выводит сумму чисел от 1 до N. Программа должна вывести только ответ.",
+  "stdin": "100\n",
+  "expected_numbers": [
+   5050
+  ],
+  "reference": "benchmark_v2_reference/24_read_sum_to_n.pro"
+ },
+ {
+  "id": "b25_read_string_length",
+  "category": "ввод",
+  "instruction": "Напиши на Visual Prolog консольную программу, которая читает строку с клавиатуры и выводит количество символов в ней. Программа должна вывести только ответ.",
+  "stdin": "Visual Prolog\n",
+  "expected_numbers": [
+   13
+  ],
+  "reference": "benchmark_v2_reference/25_read_string_length.pro"
+ }
+]

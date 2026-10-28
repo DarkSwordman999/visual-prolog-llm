@@ -126,6 +126,18 @@ python src/eval/check_algorithms.py   # необязательно: провер
 
 ### Как обучить
 
+Самый короткий путь — одна ячейка в [Google Colab](https://colab.research.google.com/) (среда выполнения с GPU T4):
+
+```python
+!git clone -q --depth 1 https://github.com/DarkSwordman999/visual-prolog-llm /content/visual-prolog-llm
+!pip install -q unsloth
+%run /content/visual-prolog-llm/src/train/train_all.py
+```
+
+Скрипт [`src/train/train_all.py`](src/train/train_all.py) сам подключает Google Диск, собирает данные, записывает ответы исходной модели, обучает адаптер, записывает ответы обученной модели, сохраняет всё в `Мой диск/visual-prolog-llm/v3_algorithms` и скачивает файл ответов на компьютер. Параметры — в начале скрипта или переменными окружения `VP_*`.
+
+То же самое по шагам, с графиками и формой параметров:
+
 Ноутбук [`notebooks/train_visual_prolog.ipynb`](notebooks/train_visual_prolog.ipynb) для Google Colab делает всё по кнопке «Выполнить все»: ставит пакеты, берёт данные из этого репозитория (и часть PFC из архива на Google Диске, если он есть), обучает QLoRA-адаптер, рисует график потерь, отвечает на бенчмарк и на отложенные алгоритмы и сохраняет адаптер и ответы на Google Диск. Модель, число эпох и прочие параметры меняются в форме. По умолчанию — Qwen2.5-Coder-7B-Instruct, 2 эпохи, алгоритмы повторяются 3 раза за эпоху; каждый 8-й алгоритм в обучение не попадает и служит честной проверкой.
 
 Ответы модели проверяются компилятором на Windows с Visual Prolog 11:

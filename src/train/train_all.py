@@ -45,6 +45,8 @@ DRIVE_ZIP = os.environ.get("VP_DRIVE_ZIP", "/content/drive/MyDrive/vp_dataset_fu
 OUT_DIR = os.environ.get("VP_OUT_DIR", "/content/drive/MyDrive/visual-prolog-llm")
 RUN_NAME = os.environ.get("VP_RUN_NAME", "v3_algorithms")
 SAVE_GGUF = os.environ.get("VP_SAVE_GGUF", "0") == "1"
+USE_DRIVE = os.environ.get("VP_USE_DRIVE", "1") == "1"        # 0 — без Google Диска: результат скачивается в браузер
+DOWNLOAD_LORA = os.environ.get("VP_DOWNLOAD_LORA", "1") == "1"
 SEED = 3407
 
 REPO = pathlib.Path(__file__).resolve().parents[2]
@@ -65,8 +67,12 @@ print("GPU:", torch.cuda.get_device_name(0))
 IN_COLAB = True
 try:
     from google.colab import drive, files
-    if not os.path.isdir("/content/drive/MyDrive"):
-        drive.mount("/content/drive")
+    if USE_DRIVE:
+        if not os.path.isdir("/content/drive/MyDrive"):
+            drive.mount("/content/drive")
+    else:
+        OUT_DIR = "/content/results"
+        print("Без Google Диска: результат в", OUT_DIR, "и скачается в браузер")
 except ImportError:
     IN_COLAB = False
     OUT_DIR = str(REPO / "runs")
@@ -233,5 +239,9 @@ print("Сохранено в", save_dir)
 for p in sorted(save_dir.iterdir()):
     print("  ", p.name)
 if IN_COLAB:
+    if DOWNLOAD_LORA:
+        import shutil
+        lora_zip = shutil.make_archive(str(save_dir / f"lora_{RUN_NAME}"), "zip", save_dir / "lora")
+        files.download(lora_zip)
     files.download(str(answers_path))
     print("\nФайл ответов скачивается в папку «Загрузки». Готово.")

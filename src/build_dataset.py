@@ -9,6 +9,8 @@
     textbook_pairs.jsonl  — пары «пояснение → код»: wiki (англ. и рус.), учебники в PDF,
                             разборы лабораторных работ ТулГУ
     textbook_code.jsonl   — исходники примеров к учебникам и лабораторных работ (без пояснений)
+    algorithms.jsonl      — задачи на алгоритмы: условие, идея решения простыми словами и законченная
+                            консольная программа, проверенная компилятором и запуском (src/eval/check_algorithms.py)
 
 Поля записи: id, source, origin, dialect (modern — VP 6+, legacy — VP 5 / Turbo Prolog),
 instruction, output, а у пар еще section и explanation.
@@ -255,10 +257,30 @@ def build_pfc_pairs():
     return out
 
 
+ALGO = RAW / "algorithms"
+
+
+def build_algorithms():
+    """Алгоритмы учат модель решать задачу, а не только синтаксису: в ответе идея и законченная программа."""
+    out = Collector("algorithms")
+    for line in open(ALGO / "tasks.jsonl", encoding="utf-8"):
+        t = json.loads(line)
+        code = clean((ALGO / f"{t['slug']}.pro").read_text(encoding="utf-8-sig"))
+        if not t.get("verified"):
+            out.dropped["не проверено компилятором"] += 1
+            continue
+        row = {"source": "algorithms", "origin": f"data/raw/algorithms/{t['slug']}.pro", "dialect": "modern",
+               "lang": "ru", "section": t["category"], "title": t["title"], "explanation": t["explanation"],
+               "instruction": t["instruction"], "output": code,
+               "stdin": t.get("stdin", ""), "expected_output": t["expected_output"]}
+        out.add(row, key(code))
+    return out
+
+
 def main():
     OUT.mkdir(parents=True, exist_ok=True)
     report = []
-    builds = [build_github, build_textbook_pairs, build_textbook_code]
+    builds = [build_github, build_textbook_pairs, build_textbook_code, build_algorithms]
     if (PFC / "files.jsonl").exists():
         builds += [build_pfc_code, build_pfc_pairs]
     else:
